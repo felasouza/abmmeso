@@ -9,3 +9,6 @@ class Trip:
         self.route = []
         self.end = None
         self.travel_times = []
+
+        for k,v in kwargs.items():
+            setattr(self, k, v)
