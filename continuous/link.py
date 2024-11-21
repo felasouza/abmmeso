@@ -66,9 +66,9 @@ class Link:
         if t < self.T1-1:
             self._demand = 0
         else:
-            self._demand = min(self.cumulative_inflows[t-self.T1+1]-self.cumulative_outflows[t], self.cap)
+            self._demand = min(self.cumulative_inflows[t-self.T1+1]-self.cumulative_outflows[t], self.cap*self.time_step)
 
         if t < self.T2-1:
-            self._supply = self.cap
+            self._supply = self.cap*self.time_step
         else:
-            self._supply = min(self.kj*self.length- self.cumulative_outflows[t-self.T2-1]-self.cumulative_inflows[t], self.cap)
+            self._supply = min(self.kj*self.length+ self.cumulative_outflows[t-self.T2+1]-self.cumulative_inflows[t], self.cap*self.time_step)

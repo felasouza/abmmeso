@@ -1,12 +1,14 @@
 
 
 class SimulationRunner:
-    def __init__(self):
-        self.demands_by_node = None
+    def __init__(self, **kwargs):
         self.links = None
         self.nodes = None
         self.time_step = None
         self.total_time = None
+
+        for k,v in kwargs.items():
+            setattr(self, k, v)
     
     def run(self):
         for link in self.links:

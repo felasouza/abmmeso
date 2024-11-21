@@ -53,6 +53,21 @@ class TestContinuousLink(unittest.TestCase):
         self.link.compute_demand_and_supplies(required_steps)
         self.assertAlmostEqual(self.link.get_supply(), 0)
 
+    def test_supply_and_time_step(self):
+
+        for time_step in [1.0, 3.0, 5.0]:
+            link = Link(length=300, kj=0.1, w=6.0, vf=30.0)
+            link.start(time_step=time_step, total_time=3600)
+
+            for t in range(int(100/time_step)):
+                link.compute_demand_and_supplies(t)
+                if link.get_supply()-0.3*time_step < -0.01:
+                    print(t, link.get_supply(), time_step)
+                self.assertGreaterEqual(link.get_supply()-0.3*time_step, -0.01)
+                link.set_inflow(min(link.get_supply(), 0.5*time_step))
+                link.set_outflow(min(link.get_demand(), 0.3*time_step))
+                link.update_state_variables(t)
+                
 
 
 
