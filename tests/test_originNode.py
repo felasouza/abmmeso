@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock
 from continuous.originNode import OriginNode
 
-from continuous.link import Link  # Adjust the import based on the actual module structure
+from continuous.link import Link 
 
 class TestOriginNode(unittest.TestCase):
 
@@ -41,6 +41,13 @@ class TestOriginNode(unittest.TestCase):
         self.assertEqual(self.origin_node.outflow[0], 0.2)
         self.origin_node.prepare_step(1)
         self.assertAlmostEqual(self.origin_node._demand, 0.2)
+    
+    def test_different_ratios(self):
+        link = Mock(spec=Link)
+        link.get_supply.return_value = 0.5
+        demands = [0.2, 0.6, 0.2]
+        origin_node = OriginNode(node_id=1, link=link, demands=demands)
+        origin_node.start(time_step=3, total_time=3600)        
 
 
 

@@ -25,10 +25,10 @@ class OriginNode:
 
         self.demands_at_steps = [0 for _ in range(self.total_steps)]
 
-        ratio_steps = int(self.total_time/len(self.demands))
+        ratio_steps = int(self.total_steps/len(self.demands))
         for i in range(len(self.demands)):
             for j in range(ratio_steps):
-                self.demands_at_steps[i*ratio_steps+j] = self.demands[i]
+                self.demands_at_steps[i*ratio_steps+j] = self.demands[i]*self.time_step
 
         self.entry_queue = [0 for _ in range(self.total_steps+1)]
         self.outflow = [0 for _ in range(self.total_steps)]
