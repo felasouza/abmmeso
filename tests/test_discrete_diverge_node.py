@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from discrete.divergeNode import DivergeNode
 from discrete.link import Link 
 
-class TestOneToOneNode(unittest.TestCase):
+class TestDivergeNode(unittest.TestCase):
 
     def setUp(self):
         pass
