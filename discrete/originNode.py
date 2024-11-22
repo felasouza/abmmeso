@@ -29,7 +29,7 @@ class OriginNode:
     def prepare_step(self, t):
         vehicles_departed = 0
         for vehicle in self.demand_trips:
-            if vehicle.start <= t:
+            if vehicle.start <= t*self.time_step:
                 vehicles_departed += 1
                 self.vehicles.append(vehicle)
             else:
@@ -39,9 +39,12 @@ class OriginNode:
 
     def compute_flows(self, t):
         flow = min(self._demand, self.link.get_supply())
-        vehicles = self.vehicles[0:flow]
-        self.vehicles = self.vehicles[flow:]
-        self.link.set_inflow(vehicles)
+        if flow > 0:
+            vehicles = self.vehicles[0:flow]
+            self.vehicles = self.vehicles[flow:]
+            self.link.set_inflow(vehicles)
+        else:
+            self.link.set_inflow([])
         self._demand = None
         self.entry_queue[t+1] = len(self.vehicles)
         self.outflow[t] = flow

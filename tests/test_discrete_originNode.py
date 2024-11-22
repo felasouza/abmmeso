@@ -39,6 +39,20 @@ class TestOriginNode(unittest.TestCase):
         inflow = self.link.set_inflow.call_args[0][0]
         self.assertEqual(len(inflow), 1)
         self.assertNotIn(inflow[0], self.origin_node.entry_queue)
+    
+    def test_different_time_steps(self):
+        link = Mock(spec=Link)
+        link.get_supply.return_value = 0
+        demands = trip.Trip.from_continuous_demand([0.5], 120, route=[1,])
+        origin_node = OriginNode(node_id=1, link=link, demand_trips=demands)
+        origin_node.start(time_step=2, total_time=120)
+
+        origin_node.prepare_step(0)
+        origin_node.compute_flows(0)
+        self.assertEqual(len(origin_node.vehicles),1)
+        origin_node.prepare_step(1)
+        origin_node.compute_flows(1)
+        self.assertEqual(len(origin_node.vehicles),2)    
 
 
 
