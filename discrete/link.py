@@ -62,6 +62,9 @@ class Link:
     def get_supply(self):
         return self._supply
 
+    def get_vehicle_from_index(self, index):
+        return self.vehicles[index]
+
     def update_state_variables(self, t):
         self.cumulative_inflows[t+1] = self.cumulative_inflows[t] + self._inflow
         self.cumulative_outflows[t+1] = self.cumulative_outflows[t] + self._outflow
