@@ -1,9 +1,7 @@
-# FILE: tests/test_oneToOneNode.py
-
 import unittest
 from unittest.mock import Mock
 from continuous.oneToOneNode import OneToOneNode
-from continuous.link import Link  # Adjust the import based on the actual module structure
+from continuous.link import Link
 
 class TestOneToOneNode(unittest.TestCase):
 
