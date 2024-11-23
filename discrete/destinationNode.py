@@ -13,7 +13,7 @@ class DestinationNode:
     def start(self, time_step, total_time):
         self.time_step = time_step
         self.total_time = total_time
-        self.total_steps = total_time // time_step
+        self.total_steps = int(total_time / time_step)
 
         self.inflow = [0] * self.total_steps
 
