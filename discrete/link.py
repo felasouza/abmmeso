@@ -23,6 +23,7 @@ class Link:
         self._demand = None
         self._supply = None
         self._cum_supply_term = None
+        self._cum_demand_term = None
 
         for k,v in kwargs.items():
             setattr(self, k, v)
@@ -61,6 +62,9 @@ class Link:
 
     def get_supply(self):
         return self._supply
+    
+    def get_cumulative_demand_term(self):
+        return self._cum_demand_term
 
     def get_vehicle_from_index(self, index):
         return self.vehicles[index]
@@ -80,9 +84,11 @@ class Link:
     def compute_demand_and_supplies(self, t):
         if t < self.T1-1:
             self._demand = 0
+            self._cum_demand_term = 0
         else:
             self._demand = min(math.floor(self.cumulative_inflows[t-self.T1+1]-self.cumulative_outflows[t]), 
                                math.floor(self.cap_disc_downstream[t]))
+            self._cum_demand_term = self.cumulative_inflows[t-self.T1+1]-self.cumulative_outflows[t]
 
         if t < self.T2-1:
             self._supply = self.cap_disc_upstream[t]
