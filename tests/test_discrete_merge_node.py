@@ -90,7 +90,6 @@ class TestMergeNode(unittest.TestCase):
                 if expected_flows[i][t] > 0:
                     inb.set_outflow.return_value = [f'vehicle{i}{t}']
                     inb.get_vehicle_from_index.return_value = f'vehicle{i}{t}'
-                print(i, t, f'vehicle{i}{t}')
             
             merge_node.prepare_step(t)
             merge_node.compute_flows(t)
