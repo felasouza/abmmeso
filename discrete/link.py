@@ -24,6 +24,7 @@ class Link:
         self._supply = None
         self._cum_supply_term = None
         self._cum_demand_term = None
+        self.initial_capacity = None
 
         for k,v in kwargs.items():
             setattr(self, k, v)
@@ -45,9 +46,12 @@ class Link:
         self.T2 = max(1, int(self.length/(self.w*time_step)))
 
         self.cap = self.kj*self.vf*self.w/(self.vf+self.w)
-
-        self.cap_disc_upstream[0] = math.ceil(self.cap)+1
-        self.cap_disc_downstream[0] = math.ceil(self.cap)+1
+        if self.initial_capacity is not None:
+            self.cap_disc_upstream[0] = self.initial_capacity
+            self.cap_disc_downstream[0] = self.initial_capacity
+        else:
+            self.cap_disc_upstream[0] = math.ceil(self.cap*self.time_step)+1
+            self.cap_disc_downstream[0] = math.ceil(self.cap*self.time_step)+1
 
     def set_inflow(self, vehicles):
         self._inflow = len(vehicles)
@@ -91,8 +95,9 @@ class Link:
             self._cum_demand_term = self.cumulative_inflows[t-self.T1+1]-self.cumulative_outflows[t]
 
         if t < self.T2-1:
-            self._supply = self.cap_disc_upstream[t]
+            self._supply = int(self.cap_disc_upstream[t])
         else:
             self._supply = min(math.floor(self.kj*self.length+ self.cumulative_outflows[t-self.T2+1]-self.cumulative_inflows[t]), 
                                math.floor(self.cap_disc_upstream[t]))
+            self._supply = int(self._supply)
             self._cum_supply_term = math.floor(self.kj*self.length+self.cumulative_outflows[t-self.T2+1]-self.cumulative_inflows[t])

@@ -40,5 +40,5 @@ class OriginNode:
         flow = min(self._demand, self.link.get_supply())
         self.link.set_inflow(flow)
         self._demand = None
-        self.entry_queue[t+1] = self.entry_queue[t] + flow - self.demands_at_steps[t]
+        self.entry_queue[t+1] = self.entry_queue[t] - flow + self.demands_at_steps[t]
         self.outflow[t] = flow

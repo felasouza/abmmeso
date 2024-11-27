@@ -31,3 +31,8 @@ class SimulationRunner:
             
             for link in self.links:
                 link.update_state_variables(t)
+
+    def get_times(self, added_step = 0):
+        return list([i*self.time_step for i in range(int(self.total_time/self.time_step)+added_step)])
+
+
