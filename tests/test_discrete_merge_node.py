@@ -33,7 +33,7 @@ class TestMergeNode(unittest.TestCase):
         for i in range(2):
             inbound_links.append(Mock(spec=Link))
         
-        merge_node = MergeNode(1, outbound_link, inbound_links, [0,1])
+        merge_node = MergeNode(1, outbound_link, inbound_links,[0,1])
         merge_node.start(time_step=1, total_time=3600)
 
         
@@ -55,9 +55,13 @@ class TestMergeNode(unittest.TestCase):
 
     def test_compute_flows_congested(self):
         cases = [
-            {'total_steps': 4,
+            {'total_steps': 4, 'supplies': [1,1,1,1],
              'capacity': 0.5, 'demands': {0: [0,1,0,1], 1: [1,1,1,0]}, 'expected_flows': {0: [0,1,0,1], 1: [0,0,1,0]}, 
-                'outbound_flows': [[], ['vehicle01'], ['vehicle12'], ['vehicle03']]},
+                'outbound_flows': [[], ['vehicle010'], ['vehicle120'], ['vehicle030']]},
+            
+            {'total_steps': 1, 'supplies': [2,],
+                'capacity': 1.0, 'demands': {0: [1], 1: [2]}, 'expected_flows': {0: [1], 1: [1]}, 
+                'outbound_flows': [['vehicle000','vehicle100']], 'priority_vector': [0,0,0,1]}, 
         ]
 
 
@@ -73,23 +77,26 @@ class TestMergeNode(unittest.TestCase):
                 priority_minimum_size += 1
             priority_vector = [i % 2 for i in range(priority_minimum_size)]
 
+            if 'priority_vector' in case:
+                priority_vector = case['priority_vector']
+
             merge_node = MergeNode(1, outbound_link, inbound_links, priority_vector)
             merge_node.start(time_step=1, total_time=3600)
 
-            for inb in inbound_links:
-                inb.get_cumulative_demand_term.return_value = 3
+            for u, inb in enumerate(inbound_links):
+                inb.get_cumulative_demand_term.return_value = u+1
             
             demands = case['demands']
             expected_flows = case['expected_flows']
             expected_outbound_flows = case['outbound_flows']
 
             for t in range(case['total_steps']):
-                outbound_link.get_supply.return_value = 1
+                outbound_link.get_supply.return_value = case['supplies'][t]
             for i, inb in enumerate(inbound_links):
                 inb.get_demand.return_value = demands[i][t]
                 if expected_flows[i][t] > 0:
-                    inb.set_outflow.return_value = [f'vehicle{i}{t}']
-                    inb.get_vehicle_from_index.return_value = f'vehicle{i}{t}'
+                    inb.set_outflow.return_value = [f'vehicle{i}{t}{u}' for u in range(expected_flows[i][t])]
+                    inb.get_vehicle_from_index.side_effect = [f'vehicle{i}{t}{u}' for u in range(expected_flows[i][t])]
             
             merge_node.prepare_step(t)
             merge_node.compute_flows(t)

@@ -2,6 +2,7 @@ import math
 
 class Link:
     def __init__(self, **kwargs):
+        self.link_id = None
         self.length = None
         self.vf = None
         self.w = None

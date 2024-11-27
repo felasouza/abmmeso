@@ -44,4 +44,9 @@ class DivergeNode:
         assert len(ret_val) == sum([len(vs) for vs in vehicles_by_outbound_link])
 
     def get_outbound_vehicle_from_vehicle(self, vehicle):
-        pass
+        idx_current = vehicle.route.index(self.inbound_link.link_id)
+        outbound_id = vehicle.route[idx_current+1]
+
+        for idx_outb, link in enumerate(self.outbound_links):
+            if link.link_id == outbound_id:
+                return idx_outb

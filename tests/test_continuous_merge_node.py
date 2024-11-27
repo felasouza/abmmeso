@@ -12,7 +12,7 @@ class TestMergeNode(unittest.TestCase):
             self.inbound_links.append(Mock(spec=Link))
             self.inbound_links[i].cap = 0.5
         self.outbound_link.get_supply.return_value = 0.5
-        self.node = MergeNode(node_id=1, outbound_link=self.outbound_link, inbound_links=self.inbound_links)
+        self.node = MergeNode(node_id=1, outbound_link=self.outbound_link, inbound_links=self.inbound_links, [0.5, 0.5])
 
         self.node.start(time_step=1, total_time=3600)
 
