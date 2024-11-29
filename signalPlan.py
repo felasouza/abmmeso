@@ -19,4 +19,18 @@ class SignalPlan:
     
 
     def get_right_of_way(self, link_id, instant):
-        return self.FORBIDDEN
+        instant = instant % self.cycle
+
+        for interval in self.protected_intervals[link_id]:
+            if interval[0] <= instant < interval[1]:
+                return SignalPlan.PROTECTED
+
+        for interval in self.permitted_intervals[link_id]:
+            if interval[0] <= instant < interval[1]:
+                return SignalPlan.PERMITTED
+
+        for interval in self.stop_permit_intervals[link_id]:
+            if interval[0] <= instant < interval[1]:
+                return SignalPlan.STOP_PERMIT
+
+        return SignalPlan.FORBIDDEN
