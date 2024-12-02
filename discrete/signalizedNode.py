@@ -34,6 +34,8 @@ class SignalizedNode(DivergeNode):
         self.current_flows = {link.link_id: 0 for link in self.inbound_links}
         self.inflow_order_by_outbound_link = {link.link_id: [] for link in self.outbound_links}
 
+        self.remaining_supplies = [link.get_supply() for link in self.outbound_links]
+
         self.compute_for_links(priority_links, True) #although not strictly necessary if the conflicting flows only affects the current step, but it is a good practice to avoid future errors
         self.compute_for_links(permitted_links)
         self.compute_for_links(stop_permit_links)
@@ -45,7 +47,7 @@ class SignalizedNode(DivergeNode):
             link.set_inflow(self.inflow_order_by_outbound_link[link.link_id])
 
     def compute_for_links(self, links_with_row, protected=False):
-        remaining_supplies = [link.get_supply() for link in self.outbound_links]
+        
 
         for link in links_with_row:
             demand = link.get_demand()
@@ -68,10 +70,24 @@ class SignalizedNode(DivergeNode):
                 front_vehicle = link.get_vehicle_from_index(self.current_flows[link.link_id])
                 idx_outb = self.get_outbound_vehicle_from_vehicle(front_vehicle)
 
-                if remaining_supplies[idx_outb] >= 1:
-                    remaining_supplies[idx_outb] -= 1
+                if self.remaining_supplies[idx_outb] >= 1:
+                    self.remaining_supplies[idx_outb] -= 1
                     self.current_flows[link.link_id] += 1
                     demand -= 1
                     self.inflow_order_by_outbound_link[self.outbound_links[idx_outb].link_id].append(front_vehicle)
                 else:
                     break
+
+
+    def get_outbound_vehicle_from_vehicle(self, vehicle):
+        idx_current = -1
+
+        for idx_current, link in enumerate(vehicle.route):
+            if link in [link.link_id for link in self.inbound_links]:
+                break
+
+        outbound_id = vehicle.route[idx_current+1]
+
+        for idx_outb, link in enumerate(self.outbound_links):
+            if link.link_id == outbound_id:
+                return idx_outb
