@@ -33,6 +33,12 @@ class TestGeneralNodeModel(unittest.TestCase):
                 'expected_outflows': [1, 0, 1], 'expected_inflows': [1, 0, 1], 'start_priority': 0,
                 'end_priority': 1}
         self.run_case(case)
+
+    def test_forward_mechanism_locked_outbound_link(self):
+        case = {'demands': [1, 0, 1], 'supplies': [1, 1, 0], 'outbound_links': [0, 1, 1], 'cum_term': [1, 1, 1],
+                'expected_outflows': [1, 0, 0], 'expected_inflows': [1, 0, 0], 'start_priority': 0,
+                'end_priority': 1}
+        self.run_case(case)
     
     def run_case(self, case):
         node = self.create_node()
@@ -43,7 +49,14 @@ class TestGeneralNodeModel(unittest.TestCase):
 
         for u, demand in enumerate(case['demands']):
             inbound_links[u].get_demand = MagicMock(return_value=demand)
-            inbound_links[u].get_cumulative_demand_term = MagicMock(return_value = demand)
+            
+            if 'cum_term' in case:
+                ret_val_cum = case['cum_term'][u]
+            else:
+                ret_val_cum = demand
+            
+            inbound_links[u].get_cumulative_demand_term = MagicMock(return_value = ret_val_cum)
+
             inbound_links[u].set_outflow = MagicMock(return_value=[f'vehicle_{u}'])
             inbound_links[u].get_vehicle_from_index = MagicMock(return_value=f'vehicle_{u}')
 

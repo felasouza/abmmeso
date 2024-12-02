@@ -31,6 +31,7 @@ class GeneralNodeModel:
         
         flow_order_by_outbound_link = [[] for _ in self.outbound_links]
         priority_base = True
+        locked_outbound_indices = []
 
         while True:
 
@@ -42,6 +43,7 @@ class GeneralNodeModel:
             if priority_base:
                 if remaining_demands[idx] == 0 and cumulative_terms[idx]-flow_by_inbound_link[idx] > 0 :
                     priority_base = False
+                    locked_outbound_indices.append(idx)
                     iteration_index = (iteration_index + 1) % len(self.priority_vector)
                     continue
 
@@ -51,6 +53,9 @@ class GeneralNodeModel:
                         break
                     continue
             else:
+                if remaining_demands[idx] == 0 and cumulative_terms[idx]-flow_by_inbound_link[idx] > 0:
+                    locked_outbound_indices.append(idx)
+                    
                 if remaining_demands[idx] == 0:
                     iteration_index = (iteration_index + 1) % len(self.priority_vector)
                     if iteration_index == initial_index:
@@ -61,7 +66,7 @@ class GeneralNodeModel:
             outbound_index = self.get_outbound_vehicle_from_vehicle(approach_with_priority.get_vehicle_from_index(inb_flow))
             downstream_supply = remaining_supplies[outbound_index]
             #if here now we check whether the flow is possible
-            if downstream_supply >= 1:
+            if downstream_supply >= 1 and outbound_index not in locked_outbound_indices:
                 remaining_supplies[outbound_index] -= 1
                 
                 total_flow += 1
@@ -80,6 +85,8 @@ class GeneralNodeModel:
                     if iteration_index == initial_index:
                         break
             else:
+                locked_outbound_indices.append(outbound_index)
+
                 iteration_index = (iteration_index + 1) % len(self.priority_vector)
                 if priority_base is False and iteration_index == initial_index:
                     break
