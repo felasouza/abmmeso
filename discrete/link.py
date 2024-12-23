@@ -25,6 +25,7 @@ class Link:
         self._supply = None
         self._cum_supply_term = None
         self._cum_demand_term = None
+        self._next_step_demand = None
         self.initial_capacity = None
 
         for k,v in kwargs.items():
@@ -65,6 +66,9 @@ class Link:
     def get_demand(self):
         return self._demand
 
+    def get_next_step_demand(self):
+        return self._next_step_demand
+
     def get_supply(self):
         return self._supply
     
@@ -85,15 +89,26 @@ class Link:
         self._supply = None
         self._inflow = None
         self._outflow = None
+    
+    def get_flows_in_the_past_steps(self, t, steps):
+        return self.cumulative_outflows[t]-self.cumulative_outflows[t-steps]
 
     def compute_demand_and_supplies(self, t):
         if t < self.T1-1:
             self._demand = 0
             self._cum_demand_term = 0
+            self._next_step_demand = 0
         else:
             self._demand = min(math.floor(self.cumulative_inflows[t-self.T1+1]-self.cumulative_outflows[t]), 
                                math.floor(self.cap_disc_downstream[t]))
             self._cum_demand_term = self.cumulative_inflows[t-self.T1+1]-self.cumulative_outflows[t]
+
+            queue_addition = self.cumulative_inflows[t-self.T1+2]-self.cumulative_inflows[t-self.T1+1]
+
+            if queue_addition > 0 or self._cum_demand_term > 0:
+                self._next_step_demand = 1
+            else:
+                self._next_step_demand = 0
 
         if t < self.T2-1:
             self._supply = int(self.cap_disc_upstream[t])

@@ -74,6 +74,31 @@ class TestLink(unittest.TestCase):
         self.link.compute_demand_and_supplies(required_steps)
         self.assertAlmostEqual(self.link.get_supply(), 0)
 
+    def test_get_last_flows_and_future_demand(self):
+        link = Link(length=150, kj=0.2, w=6.0, vf=30.0)
+
+        link.start(time_step=1, total_time=30)
+
+        for i in range(5):
+            link.compute_demand_and_supplies(i)
+            link.set_inflow([vehicle_trip(i, i)])
+            link.set_outflow(0)
+            link.update_state_variables(i)
+        
+        self.assertEqual(link.get_next_step_demand(),1)
+        for i in range(5,10):
+            link.compute_demand_and_supplies(i)
+            link.set_inflow([])
+            link.set_outflow(1)
+            link.update_state_variables(i)
+        
+
+        self.assertEqual(link.get_flows_in_the_past_steps(10, 5), 5)
+        self.assertEqual(link.get_flows_in_the_past_steps(10, 1), 1)
+
+
+
+
 
     def tearDown(self):
         del self.link
