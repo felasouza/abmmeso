@@ -29,6 +29,17 @@ class TestTrip(unittest.TestCase):
         self.assertEqual(len(trips), 12)       
         self.assertAlmostEqual(trips[1].start,1.0)
         self.assertAlmostEqual(trips[6].start,4.0)
+    
+    def test_trip_with_route_split(self):
+        demand_pattern = [1, 2, 3]
+        route_integer_share = {1: 1, 2: 2}
+        trips = Trip.from_continuous_demand(demand_pattern, total_time=6, route_integer_share=route_integer_share)
+        self.assertEqual(len(trips), 12)
+        expected_routes = [1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2]
+        for i, trip in enumerate(trips):
+            self.assertEqual(trip.route, expected_routes[i])
+
+
 
 
 
