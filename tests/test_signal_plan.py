@@ -1,5 +1,5 @@
 import unittest
-from signalPlan import SignalPlan
+from trafficsignal.signalPlan import SignalPlan
 
 class TestSignalPlan(unittest.TestCase):
 

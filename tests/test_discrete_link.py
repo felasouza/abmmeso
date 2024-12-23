@@ -1,6 +1,6 @@
 import unittest
 from discrete.link import Link
-from trip import Trip
+from demand.trip import Trip
 
 def vehicle_trip(trip_id, step):
     return Trip(trip_id=trip_id, origin=1, destination=2, start=step, route=[1,], end=step+1, travel_times=[])

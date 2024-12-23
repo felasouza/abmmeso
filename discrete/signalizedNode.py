@@ -1,5 +1,5 @@
 from discrete.divergeNode import DivergeNode
-from signalPlan import SignalPlan
+from trafficsignal.signalPlan import SignalPlan
 
 class SignalizedNode(DivergeNode):
     def __init__(self, node_id, inbound_links, outbound_links, conflicting_map, signal_plan, **kwargs):

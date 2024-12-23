@@ -1,5 +1,5 @@
 import unittest
-from trip import Trip
+from demand.trip import Trip
 
 class TestTrip(unittest.TestCase):
 

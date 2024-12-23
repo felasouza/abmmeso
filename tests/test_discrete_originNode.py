@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from discrete.originNode import OriginNode
 
 from discrete.link import Link  # Adjust the import based on the actual module structure
-import trip
+import demand.trip as trip
 
 class TestOriginNode(unittest.TestCase):
 

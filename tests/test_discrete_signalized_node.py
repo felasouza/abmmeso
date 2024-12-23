@@ -2,7 +2,7 @@ import unittest
 
 from discrete.signalizedNode import SignalizedNode
 from discrete.link import Link
-from signalPlan import SignalPlan
+from trafficsignal.signalPlan import SignalPlan
 from unittest.mock import MagicMock
 
 class LinkDescriptor:
