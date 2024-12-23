@@ -13,6 +13,8 @@ class LinkDescriptor:
         self.expected_inflow = kwargs.get('expected_inflow', [])
         self.expected_outflow = kwargs.get('expected_outflow', 0)
         self.get_vehicle_from_index = kwargs.get('get_vehicle_from_index', None)
+        self.get_flow_previous_steps = kwargs.get('get_flow_previous_steps', 0)
+        self.next_step_demand = kwargs.get('next_step_demand', 0)
 
 class CaseDescriptor:
     def __init__(self, links, side_effect_right_of_way, side_effect_get_outbound_vehicle_from_vehicle, step):
@@ -43,8 +45,10 @@ class TestSignalizedNode(unittest.TestCase):
             LinkDescriptor(get_outflow=1, get_demand=1, get_supply=1, expected_inflow=1, expected_outflow=1, get_vehicle_from_index = ['vehicle_2']),
             LinkDescriptor(get_outflow=0, get_demand=1, get_supply=1, expected_inflow=0, expected_outflow=0, get_vehicle_from_index = ['vehicle_3']),
             LinkDescriptor(get_outflow=0, get_demand=0, get_supply=1, expected_inflow=0, expected_outflow=0),
-            LinkDescriptor(get_outflow=0, get_demand=0, get_supply=1, expected_inflow=['vehicle_1'], expected_outflow=0),
-            LinkDescriptor(get_outflow=0, get_demand=0, get_supply=1, expected_inflow=['vehicle_2'], expected_outflow=0),
+            LinkDescriptor(get_outflow=0, get_demand=0, get_supply=1, expected_inflow=['vehicle_1'], expected_outflow=0,
+                           get_flow_previous_steps = 0),
+            LinkDescriptor(get_outflow=0, get_demand=0, get_supply=1, expected_inflow=['vehicle_2'], expected_outflow=0,
+                           get_flow_previous_step = 0),
             LinkDescriptor(get_outflow=0, get_demand=0, get_supply=1, expected_inflow=[], expected_outflow=0),
             LinkDescriptor(get_outflow=0, get_demand=0, get_supply=1, expected_inflow=[], expected_outflow=0)
             ],
@@ -72,7 +76,8 @@ class TestSignalizedNode(unittest.TestCase):
             LinkDescriptor(get_outflow=0, get_demand=0, get_supply=1, expected_inflow=['vehicle_1'], expected_outflow=1),
             LinkDescriptor(get_outflow=0, get_demand=0, get_supply=1, expected_inflow=[], expected_outflow=0),
             LinkDescriptor(get_outflow=0, get_demand=0, get_supply=1, expected_inflow=['vehicle_3'], expected_outflow=0),
-            LinkDescriptor(get_outflow=0, get_demand=0, get_supply=1, expected_inflow=[], expected_outflow=0)
+            LinkDescriptor(get_outflow=0, get_demand=0, get_supply=1, expected_inflow=[], expected_outflow=0,
+                           next_step_demand = 0)
             ],
             side_effect_right_of_way=[
             SignalPlan.PROTECTED, SignalPlan.PERMITTED, SignalPlan.PROTECTED, SignalPlan.STOP_PERMIT
@@ -90,6 +95,8 @@ class TestSignalizedNode(unittest.TestCase):
             link.get_demand = MagicMock(return_value = link_descriptor.get_demand)
             link.get_supply = MagicMock(return_value = link_descriptor.get_supply)
             link.get_vehicle_from_index = MagicMock(side_effect = link_descriptor.get_vehicle_from_index)
+            link.get_flows_in_the_past_steps = MagicMock(return_value = link_descriptor.get_flow_previous_steps)
+            link.get_next_step_demand = MagicMock(return_value = link_descriptor.next_step_demand)
 
         node.prepare_step(descriptor.step)
         node.signal_plan.get_right_of_way = MagicMock()

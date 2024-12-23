@@ -9,6 +9,9 @@ class SignalizedNode(DivergeNode):
         self.conflicting_map = conflicting_map
         self.signal_plan = signal_plan
         self.current_flows = {link.link_id: 0 for link in self.inbound_links}
+        self.last_update = None
+        self.permitted_flow_time = 0
+        self.permitted_flow_steps = None
 
         for k,v in kwargs.items():
             setattr(self, k, v)
@@ -17,6 +20,8 @@ class SignalizedNode(DivergeNode):
         self.total_steps = int(total_time/time_step)
         self.time_step = time_step
         self.total_time = total_time
+        self.last_update = -1
+        self.permitted_flow_steps = int(self.permitted_flow_time/time_step)
 
     def prepare_step(self, t):
         pass
@@ -45,18 +50,17 @@ class SignalizedNode(DivergeNode):
         
         for link in self.outbound_links:
             link.set_inflow(self.inflow_order_by_outbound_link[link.link_id])
+        self.last_update = t
 
     def compute_for_links(self, links_with_row, protected=False):
-        
-
         for link in links_with_row:
             demand = link.get_demand()
 
             if not protected:
                 has_conflicting_flow = False
-
                 for conflicting_link_id in self.conflicting_map[link.link_id]:
-                    if self.current_flows[conflicting_link_id] > 0:
+                    the_conflicting_link = [link for link in self.inbound_links if link.link_id == conflicting_link_id][0]
+                    if self.current_flows[conflicting_link_id] > 0 or the_conflicting_link.get_next_step_demand() > 0 or the_conflicting_link.get_flows_in_the_past_steps(self.last_update, self.permitted_flow_steps) > 0:
                         has_conflicting_flow = True
                         break
             else:
