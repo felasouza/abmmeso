@@ -10,7 +10,7 @@ import discrete.originNode
 import discrete.destinationNode
 import discrete.oneToOneNode
 import discrete.mergeNode
-from trip import Trip
+from demand.trip import Trip
 
 import pickle
 
@@ -92,17 +92,38 @@ def run_scenario_discrete(vf, w, kj):
 
 if __name__ == '__main__':
     import pylab
+    import matplotlib
     
+    import matplotlib
+    matplotlib.rcParams.update(
+        {
+            'text.usetex': False,
+            'font.family': 'stixgeneral',
+            'mathtext.fontset': 'stix',
+        }
+    )
 
 
     runner = run_scenario(2.958e+01,  5.532e+00,  1.059e-01)
     runner_discrete = run_scenario_discrete(2.958e+01,  5.532e+00,  1.059e-01)
 
-    f, axs = pylab.subplots(1,2, figsize=(10,5))
+    f, axs = pylab.subplots(1,3, figsize=(9,4.5))
+
 
     nv_continuous = [(runner.links[1].cumulative_inflows[i] - runner.links[1].cumulative_outflows[i])/runner.links[1].length for i in range(len(runner.links[1].cumulative_inflows))]
     nv_discrete = [(runner_discrete.links[1].cumulative_inflows[i] - runner_discrete.links[1].cumulative_outflows[i])/runner_discrete.links[1].length for i in range(len(runner_discrete.links[1].cumulative_inflows))]
     
+    vehicles_by_link_discrete = []
+    vehicles_by_link_continuous = []
+    for u in range(len(runner_discrete.links)):
+        nv_link_continuous = [(runner.links[u].cumulative_inflows[i] - runner.links[u].cumulative_outflows[i]) for i in range(len(runner.links[u].cumulative_inflows))]
+        nv_link_discrete = [(runner_discrete.links[u].cumulative_inflows[i] - runner_discrete.links[u].cumulative_outflows[i]) for i in range(len(runner_discrete.links[u].cumulative_inflows))]
+        vehicles_by_link_continuous.append(nv_link_continuous)
+        vehicles_by_link_discrete.append(nv_link_discrete)
+    
+    total_by_step_continuous = [sum([vehicles_by_link_continuous[u][i] for u in range(len(vehicles_by_link_continuous))]) for i in range(len(vehicles_by_link_continuous[0]))]
+    total_by_step_discrete = [sum([vehicles_by_link_discrete[u][i] for u in range(len(vehicles_by_link_discrete))]) for i in range(len(vehicles_by_link_discrete[0]))]
+
     gs = 120
     time_step = (1/30.0)
     
@@ -144,17 +165,30 @@ if __name__ == '__main__':
     #axs[1].plot(group_data(transition_flows_discrete, gs), label='D-T')
     axs[1].plot(times_flows, [el*3600 for el in grouped_data_flow], label='Data', color='black')
     axs[1].legend()
-    axs[0].set_ylim(0, 0.2)
+    axs[0].set_ylim(0, 0.15)
     axs[1].set_ylim(0, 6500)
+    axs[2].set_ylim(0,200)
+    axs[2].set_ylabel("Vehicles in the network (veh)")
     axs[0].set_xlim(4,12)
     axs[1].set_xlim(4,12)
+    axs[2].set_xlim(4,12)
     axs[0].set_xlabel('Time of Day (h)')
     axs[1].set_xlabel('Time of Day (h)')
+    axs[2].set_xlabel('Time of Day (h)')
     axs[0].grid(True)
     axs[1].grid(True)
+    axs[2].grid(True)
     axs[0].set_ylabel('Density (veh/m)')
     axs[1].set_ylabel('Flow (veh/h)')
+    axs[0].set_title('(a)')
+    axs[1].set_title('(b)')
+    axs[2].set_title('(c)')
+    times_in_net = [4+(1.0*i)/3600 for i in range(len(total_by_step_continuous))]
+    axs[2].plot(times_in_net, total_by_step_continuous, label='Continuous')
+    axs[2].plot(times_in_net, total_by_step_discrete, label='Discrete')
+    axs[2].legend()
     pylab.tight_layout()
+    pylab.savefig("C:\\temp\\paper\\ltm_freeway_scenario.pdf", dpi=600)
     pylab.show()
 
     #print(run_for_parameters((30.0, 6.0, 1.0)))
