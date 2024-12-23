@@ -3,7 +3,7 @@ from continuous.mergeNode import MergeNode
 from continuous.originNode import OriginNode
 from continuous.destinationNode import DestinationNode
 from continuous.oneToOneNode import OneToOneNode
-from simulationRunner import SimulationRunner
+from simulationengine.simulationRunner import SimulationRunner
 
 import discrete.link
 import discrete.originNode
