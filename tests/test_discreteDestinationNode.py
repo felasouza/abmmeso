@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock
 from discrete.destinationNode import DestinationNode
 from discrete.link import Link  
-
+from demand.trip import Trip
 
 
 class TestDestinationNode(unittest.TestCase):
@@ -30,12 +30,14 @@ class TestDestinationNode(unittest.TestCase):
 
     def test_compute_flows(self):
         # Test the compute_flows method
+        vehicle_1 = Trip(trip_id=1, start=0, route = [1,])
         self.link.get_demand.return_value = 1
-        self.link.set_outflow.return_value = ['vehicle1']
+        self.link.set_outflow.return_value = [vehicle_1,]
         self.destination_node.compute_flows(0)
         self.assertEqual(self.link.set_outflow.call_count, 1)
         self.assertEqual(self.link.set_outflow.call_args[0][0], 1)
-        self.assertEqual(self.destination_node.arrived_vehicles, ['vehicle1'])
+        self.assertEqual(self.destination_node.arrived_vehicles, [vehicle_1])
+        self.assertIsNotNone(vehicle_1.end)
 
 
 if __name__ == '__main__':

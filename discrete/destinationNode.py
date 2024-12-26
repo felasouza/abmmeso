@@ -23,5 +23,7 @@ class DestinationNode:
     def compute_flows(self, t):
         outflow = self.link.get_demand()
         vehicles = self.link.set_outflow(outflow)
+        for vehicle in vehicles:
+            vehicle.end = t
         self.inflow[t] = outflow
         self.arrived_vehicles.extend(vehicles)
