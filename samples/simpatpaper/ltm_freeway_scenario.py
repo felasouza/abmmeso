@@ -160,9 +160,7 @@ if __name__ == '__main__':
     axs[1].plot(times_flows, [el*3600 for el in grouped_flows_downstream], label='Continuous')
     axs[1].plot(times_flows, [el*3600 for el in grouped_flows_downstream_discrete], label='Discrete')
     axs[1].plot(times_flows, [el*3600 for el in group_data(ramp_flows_continuous, gs)],linestyle='--', label='Ramp')
-    #axs[1].plot(group_data(ramp_flows_discrete, gs), label='D-R')
-    #axs[1].plot(group_data(transition_flows_continuous, gs), label='C-T')
-    #axs[1].plot(group_data(transition_flows_discrete, gs), label='D-T')
+
     axs[1].plot(times_flows, [el*3600 for el in grouped_data_flow], label='Data', color='black')
     axs[1].legend()
     axs[0].set_ylim(0, 0.15)
@@ -191,29 +189,7 @@ if __name__ == '__main__':
     pylab.savefig("C:\\temp\\paper\\ltm_freeway_scenario.pdf", dpi=600)
     pylab.show()
 
-    #print(run_for_parameters((30.0, 6.0, 1.0)))
 
-
-    # f, axs = pylab.subplots(1, 3, figsize=(15, 5))
-
-
-    # axs[0].plot(runner.get_times(1), runner.links[0].cumulative_outflows, label='Upstream Link')
-    # axs[0].plot(runner.get_times(1), runner.links[1].cumulative_outflows, label='Transition Link')
-    # axs[0].plot(runner.get_times(1), runner.links[2].cumulative_outflows, label='Ramp Link')
-    # axs[0].plot(runner.get_times(1), runner.links[3].cumulative_outflows, label='Downstream Link')
-    # axs[0].legend()
-
-    # for index in range(4):
-    #     nv_link = [(runner.links[index].cumulative_inflows[i] - runner.links[index].cumulative_outflows[i])/runner.links[index].length for i in range(len(runner.links[index].cumulative_inflows))]
-    #     grouped_nv = group_data(nv_link, 120)
-    #     flows = [runner.links[index].cumulative_outflows[i+1]-runner.links[index].cumulative_outflows[i] for i in range(len(runner.links[index].cumulative_outflows)-1)]
-    #     axs[1].plot( grouped_nv, label=f'Link {index+1}')
-    #     axs[2].plot(runner.get_times(), flows, label=f'Link {index+1}')
-    # axs[1].legend()
-    # axs[2].legend()
-    # axs[1].plot(data['upstream_density'], label='Upstream Density', color='black')
-    # pylab.tight_layout()
-    # pylab.show()
 
     from scipy.optimize import differential_evolution
 
