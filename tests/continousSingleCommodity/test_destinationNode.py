@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock
-from continuous.destinationNode import DestinationNode
-from continuous.link import Link  
+from continuousSingleCommodity.destinationNode import DestinationNode
+from continuousSingleCommodity.link import Link  
 
 class TestDestinationNode(unittest.TestCase):
 

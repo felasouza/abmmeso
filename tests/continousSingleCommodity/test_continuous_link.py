@@ -1,6 +1,6 @@
 import unittest
 
-from continuous.link import Link  # Adjust the import based on the actual module structure
+from continuousSingleCommodity.link import Link  # Adjust the import based on the actual module structure
 
 class TestContinuousLink(unittest.TestCase):
 

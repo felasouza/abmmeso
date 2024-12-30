@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock
-from continuous.mergeNode import MergeNode
-from continuous.link import Link
+from continuousSingleCommodity.mergeNode import MergeNode
+from continuousSingleCommodity.link import Link
 
 class TestMergeNode(unittest.TestCase):
 

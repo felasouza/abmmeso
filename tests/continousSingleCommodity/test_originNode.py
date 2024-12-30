@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import Mock
-from continuous.originNode import OriginNode
+from continuousSingleCommodity.originNode import OriginNode
 
-from continuous.link import Link 
+from continuousSingleCommodity.link import Link 
 
 class TestOriginNode(unittest.TestCase):
 

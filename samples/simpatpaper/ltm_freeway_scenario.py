@@ -1,8 +1,8 @@
-from continuous.link import Link
-from continuous.mergeNode import MergeNode
-from continuous.originNode import OriginNode
-from continuous.destinationNode import DestinationNode
-from continuous.oneToOneNode import OneToOneNode
+from continuousSingleCommodity.link import Link
+from continuousSingleCommodity.mergeNode import MergeNode
+from continuousSingleCommodity.originNode import OriginNode
+from continuousSingleCommodity.destinationNode import DestinationNode
+from continuousSingleCommodity.oneToOneNode import OneToOneNode
 from simulationengine.simulationRunner import SimulationRunner
 
 import discrete.link

@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock
-from continuous.divergeNode import DivergeNode
-from continuous.link import Link
+from continuousSingleCommodity.divergeNode import DivergeNode
+from continuousSingleCommodity.link import Link
 
 class TestDivergeNode(unittest.TestCase):
 
