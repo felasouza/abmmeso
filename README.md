@@ -21,4 +21,4 @@ I am happy to accept changes from contributors. I am still setting up the whole 
 
 
 ## Contact
-For more information or contact information, you can find in [this website](www.felipedesouza.net).
+For more information or contact information, you can find in [this website](http://www.felipedesouza.net).
