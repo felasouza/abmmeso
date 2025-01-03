@@ -15,7 +15,6 @@ For now I (or we...) did not have any packaging so the easiest way is to clone t
 # Clone the repository
 git clone https://github.com/yourusername/yourproject.git
 
-
 ## Contributing
 I am happy to accept changes from contributors. I am still setting up the whole thing here so there is no specific guidelines other than having a proper unittest for the added module(s).
 
