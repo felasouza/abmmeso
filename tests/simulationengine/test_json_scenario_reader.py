@@ -36,3 +36,8 @@ class TestJsonScenarioReader(unittest.TestCase):
         self.assertEqual(times, [i for i in range(600)])
         total_flow = ((0.2+0.5+0.8)/3)*600
         self.assertAlmostEqual(runner.links[0].cumulative_inflows[-1], total_flow)
+    
+    def test_trip_based_discrete(self):
+        reader = simulationengine.jsonScenarioReader.JSONScenarioReader(Path("tests/simulationengine/sample_trip_based.json").resolve())
+        reader.read()
+        self.assertEqual(len(reader.nodes_dic[1].demand_trips), 20)
