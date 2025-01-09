@@ -1,19 +1,32 @@
 import json
-from discrete.link import Link
-from discrete.originNode import OriginNode
-from discrete.destinationNode import DestinationNode
-from discrete.divergeNode import DivergeNode
-from discrete.mergeNode import MergeNode
-from demand.trip import Trip
-from simulationengine.simulationRunner import SimulationRunner
+import discrete.link
+import discrete.originNode
+import discrete.destinationNode
+import discrete.divergeNode
+import discrete.mergeNode
+import continuousSingleCommodity.link
+import continuousSingleCommodity.originNode
+import continuousSingleCommodity.destinationNode
+import continuousSingleCommodity.divergeNode
+import continuousSingleCommodity.mergeNode
+import demand.trip
+import simulationengine.simulationRunner
 
 class JSONScenarioReader:
-    node_handlers = {
+    node_handlers_discrete = {
         'OriginNode': "handle_origin_node",
         'DivergeNode': "handle_diverge_node",
         'MergeNode': "handle_merge_node",
         'DestinationNode': "handle_destination_node", 
     }
+
+    node_handlers_continuous = {
+        'OriginNode': "handle_origin_node_sc",
+        'DivergeNode': "handle_diverge_node_sc",
+        'MergeNode': "handle_merge_node_sc",
+        'DestinationNode': "handle_destination_node_sc"
+    }
+
     def __init__(self, filename):
         self.filename = filename
         self.links_dic = {}
@@ -26,12 +39,20 @@ class JSONScenarioReader:
         with open(self.filename, 'r') as f:
             data = json.load(f)
 
+        if data['modeling_type'] == "discrete":
+            node_handler = self.node_handlers_discrete
+        else:
+            node_handler = self.node_handlers_continuous
+
         for link in data['links']:
-            self.links_dic[link['link_id']] = Link(**link)
+            if data['modeling_type'] == "discrete":
+                self.links_dic[link['link_id']] = discrete.link.Link(**link)
+            else:
+                self.links_dic[link['link_id']] = continuousSingleCommodity.link.Link(**link)
 
         
         for node in data['nodes']:
-            method_name = self.node_handlers[node['node_type']]
+            method_name = node_handler[node['node_type']]
             handler = getattr(self, method_name)
             self.nodes_dic[node['node_id']] = handler(node)
         
@@ -39,9 +60,9 @@ class JSONScenarioReader:
         self.time_step = data['time_step']
         links = list(self.links_dic.values())
         nodes = list(self.nodes_dic.values())
-        self.simulation_runner = SimulationRunner(links=links, 
-                                    nodes = nodes, total_time =self.total_time, 
-                                    time_step = self.time_step)
+        self.simulation_runner = simulationengine.simulationRunner.SimulationRunner(
+            links=links, nodes=nodes, total_time=self.total_time, time_step=self.time_step
+        )
 
 
     def parse_route(self, route_str):
@@ -61,27 +82,55 @@ class JSONScenarioReader:
                     route_integer_share[route] = integer_value
                 
                 
-                trips = Trip.from_continuous_demand(steps, json_node['demand']['parameters']['simulation_time'],
-                route, route_integer_share, random_route)
-                return OriginNode(json_node['node_id'], link, trips)
+                trips = demand.trip.Trip.from_continuous_demand(
+                    steps, json_node['demand']['parameters']['simulation_time'],
+                    route, route_integer_share, random_route
+                )
+                return discrete.originNode.OriginNode(json_node['node_id'], link, trips)
             else:
                 pass
+               
+    def handle_origin_node_sc(self, json_node):
+        node_id = json_node['node_id']
+        link = self.links_dic[json_node['link']]
+        demand_steps = json_node['demand_steps']
 
+        return continuousSingleCommodity.originNode.OriginNode(node_id, link, demand_steps)
 
     def handle_diverge_node(self, json_node):
         node_id = json_node['node_id']
         inbound_link = self.links_dic[json_node['inbound_link']]
         outbound_links = [self.links_dic[link_id] for link_id in json_node['outbound_links']]
-        return DivergeNode(node_id, inbound_link, outbound_links)
+        return discrete.divergeNode.DivergeNode(node_id, inbound_link, outbound_links)
+    
+    def handle_diverge_node_sc(self, json_node):
+        node_id = json_node['node_id']
+        inbound_link = self.links_dic[json_node['inbound_link']]
+        outbound_links = [self.links_dic[link_id] for link_id in json_node['outbound_links']]
+        turn_rates = json_node['turn_rates']
+        return continuousSingleCommodity.divergeNode.DivergeNode(node_id, inbound_link, outbound_links,turn_rates)
 
     def handle_merge_node(self, json_node):
         node_id = json_node['node_id']
         outbound_link = self.links_dic[json_node['outbound_link']]
         inbound_links = [self.links_dic[link_id] for link_id in json_node['inbound_links']]
         priority_vector = json_node['priority_vector']
-        return MergeNode(node_id, outbound_link, inbound_links, priority_vector)
+        return discrete.mergeNode.MergeNode(node_id, outbound_link, inbound_links, priority_vector)
+
+    def handle_merge_node_sc(self, json_node):
+        node_id = json_node['node_id']
+        outbound_link = self.links_dic[json_node['outbound_link']]
+        inbound_links = [self.links_dic[link_id] for link_id in json_node['inbound_links']]
+        priorities = json_node['priorities']
+        return continuousSingleCommodity.mergeNode.MergeNode(node_id, inbound_links,
+                                                             outbound_link, priorities)
 
     def handle_destination_node(self, json_node):
         node_id = json_node['node_id']
         link = self.links_dic[json_node['link']]
-        return DestinationNode(node_id, link)
+        return discrete.destinationNode.DestinationNode(node_id, link)
+    
+    def handle_destination_node_sc(self, json_node):
+        node_id = json_node['node_id']
+        link = self.links_dic[json_node['link']]
+        return continuousSingleCommodity.destinationNode.DestinationNode(node_id, link)
