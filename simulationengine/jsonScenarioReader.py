@@ -31,33 +31,34 @@ class JSONScenarioReader:
         self.filename = filename
         self.links_dic = {}
         self.nodes_dic = {}
+        self.data = None
 
     def get_simulation_runner(self):
         return self.simulation_runner
     
     def read(self):
         with open(self.filename, 'r') as f:
-            data = json.load(f)
+            self.data = json.load(f)
 
-        if data['modeling_type'] == "discrete":
+        if self.data['modeling_type'] == "discrete":
             node_handler = self.node_handlers_discrete
         else:
             node_handler = self.node_handlers_continuous
 
-        for link in data['links']:
-            if data['modeling_type'] == "discrete":
+        for link in self.data['links']:
+            if self.data['modeling_type'] == "discrete":
                 self.links_dic[link['link_id']] = discrete.link.Link(**link)
             else:
                 self.links_dic[link['link_id']] = continuousSingleCommodity.link.Link(**link)
 
         
-        for node in data['nodes']:
+        for node in self.data['nodes']:
             method_name = node_handler[node['node_type']]
             handler = getattr(self, method_name)
             self.nodes_dic[node['node_id']] = handler(node)
         
-        self.total_time = data['total_time']
-        self.time_step = data['time_step']
+        self.total_time = self.data['total_time']
+        self.time_step = self.data['time_step']
         links = list(self.links_dic.values())
         nodes = list(self.nodes_dic.values())
         self.simulation_runner = simulationengine.simulationRunner.SimulationRunner(
@@ -71,19 +72,23 @@ class JSONScenarioReader:
     def handle_origin_node(self, json_node):
         link = self.links_dic[json_node["link"]]
         if json_node['demand']['call'].lower() == "from_continuous_demand":
-            steps = json_node['demand']['parameters']['demand_steps']
-            route = json_node['demand']['parameters']["route"]
-            random_route = json_node['demand']['parameters'].get("random_route", False)
-            if 'route_integer_share' in json_node['demand']['parameters']:
-                integer_share = json_node['demand']['parameters']['route_integer_share']
+            steps = json_node['demand']['demand_steps']
+            route = json_node['demand']["route"]
+            random_route = json_node['demand'].get("random_route", False)
+            if 'route_integer_share' in json_node['demand']:
+                integer_share = json_node['demand']['route_integer_share']
                 route_integer_share = {}
                 for route, integer_value in integer_share.items():
                     route = self.parse_route(route)
                     route_integer_share[route] = integer_value
                 
+                time = json_node['demand'].get('simulation_time', None)
+                if time is None:
+                    time = self.data['total_time']
+                
                 
                 trips = demand.trip.Trip.from_continuous_demand(
-                    steps, json_node['demand']['parameters']['simulation_time'],
+                    steps, time,
                     route, route_integer_share, random_route
                 )
                 return discrete.originNode.OriginNode(json_node['node_id'], link, trips)
