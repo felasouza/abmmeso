@@ -25,7 +25,7 @@ class TestContinuousLink(unittest.TestCase):
         self.assertEqual(supply, 0.5)
     
     def test_demand_increase(self):
-        self.link.start(time_step=1, total_time=30)
+        self.link.start(time_step=1, total_time=self.link.T1)
         for t in range(self.link.T1):
             self.link.compute_demand_and_supplies(t)
             self.assertEqual(self.link.get_demand(), 0)
@@ -36,6 +36,26 @@ class TestContinuousLink(unittest.TestCase):
         self.link.compute_demand_and_supplies(self.link.T1)
         self.assertEqual(self.link.get_demand(), 0.5)
         self.assertEqual(self.link.cumulative_inflows[self.link.T1], 0.5*self.link.T1)
+        
+        output_records = self.link.get_output_records(self.link.time_step)
+        self.assertEqual(len(output_records), 11)
+        self.assertEqual(
+            output_records[0]["inflow"],
+            self.link.cumulative_inflows[1] - self.link.cumulative_inflows[0],
+        )
+        self.assertEqual(
+            output_records[1]["outflow"],
+            self.link.cumulative_outflows[1] - self.link.cumulative_outflows[0],
+        )
+
+        output_records_half = self.link.get_output_records(self.link.time_step * 2)
+
+        self.assertEqual(len(output_records_half), 6)
+        output_one = self.link.get_output_records(10)
+        self.assertEqual(len(output_one), 2)
+        one_inflow = output_records[10]["cumulative_inflow"]-output_records[0]["cumulative_inflow"]
+        self.assertEqual(output_one[0]["inflow"], one_inflow/10.0)
+
     
     def test_supply_decrease(self):
         self.link.start(time_step=1, total_time=180)

@@ -2,6 +2,7 @@
 
 class Link:
     def __init__(self, **kwargs):
+        self.link_id = 0
         self.length = None
         self.vf = None
         self.w = None
@@ -72,3 +73,43 @@ class Link:
             self._supply = self.cap*self.time_step
         else:
             self._supply = min(self.kj*self.length+ self.cumulative_outflows[t-self.T2+1]-self.cumulative_inflows[t], self.cap*self.time_step)
+
+    def get_output_records(self, time_step):
+        total_steps = int(self.total_time / time_step)
+        records = []
+
+        for t in range(total_steps + 1):
+            start_step = int((t * time_step) / self.time_step)
+            next_st = min(int(((t + 1) * time_step) / self.time_step), len(self.cumulative_inflows)-1)
+
+            if t == 0:
+                cumulative_inflow = 0
+                cumulative_outflow = 0
+            else:
+                cumulative_inflow = self.cumulative_inflows[start_step]
+                cumulative_outflow = self.cumulative_outflows[start_step]
+
+            if t < total_steps:
+                inflow = (
+                    self.cumulative_inflows[next_st]
+                    - self.cumulative_inflows[start_step]
+                ) / time_step
+
+                outflow = (
+                    self.cumulative_outflows[next_st]
+                    - self.cumulative_outflows[start_step]
+                ) / time_step
+            else:
+                inflow = None
+                outflow = None
+
+            record = {
+                "time": t * time_step,
+                "link_id": self.link_id,
+                "inflow": inflow,
+                "outflow": outflow,
+                "cumulative_inflow": cumulative_inflow,
+                "cumulative_outflow": cumulative_outflow,
+            }
+            records.append(record)
+        return records
