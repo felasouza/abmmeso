@@ -1,6 +1,6 @@
-from .baseLink import BaseLink
+from .baseNode import BaseNode
 
-class MergeNode:
+class MergeNode(BaseNode):
     def __init__(self, node_id, outbound_link, inbound_links, priority_vector):
         self.node_id = node_id
         self.outbound_link = outbound_link

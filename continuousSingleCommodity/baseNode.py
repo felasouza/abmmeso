@@ -13,3 +13,6 @@ class BaseNode:
 
     def compute_flows(self, t):
         pass
+
+    def get_arrived_trips(self):
+        return []
