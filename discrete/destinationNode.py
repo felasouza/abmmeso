@@ -1,5 +1,3 @@
-
-
 class DestinationNode:
     def __init__(self, node_id, link):
         self.node_id = node_id
@@ -27,3 +25,17 @@ class DestinationNode:
             vehicle.end = t
         self.inflow[t] = outflow
         self.arrived_vehicles.extend(vehicles)
+
+    def get_arrived_trips(self):
+        records = []
+        for vehicle in self.arrived_vehicles:
+            records.append(
+                {
+                    "trip_id": vehicle.trip_id,
+                    "origin": vehicle.origin,
+                    "destination": vehicle.destination,
+                    "start": vehicle.start,
+                    "end": vehicle.end,
+                }
+            )
+        return records
