@@ -1,6 +1,6 @@
+from .baseLink import BaseLink
 
-
-class Link:
+class Link(BaseLink):
     def __init__(self, **kwargs):
         self.link_id = 0
         self.length = None

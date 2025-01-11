@@ -1,3 +1,4 @@
+from .baseLink import BaseLink
 
 class MergeNode:
     def __init__(self, node_id, outbound_link, inbound_links, priority_vector):

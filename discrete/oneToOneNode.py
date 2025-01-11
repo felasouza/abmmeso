@@ -1,5 +1,6 @@
+from .baseNode import BaseNode
 
-class OneToOneNode:
+class OneToOneNode(BaseNode):
     def __init__(self, node_id, inbound_link, outbound_link):
         self.node_id = node_id
         self.inbound_link = inbound_link

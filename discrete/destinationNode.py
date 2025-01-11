@@ -1,4 +1,6 @@
-class DestinationNode:
+from .baseNode import BaseNode
+
+class DestinationNode(BaseNode):
     def __init__(self, node_id, link):
         self.node_id = node_id
         self.link = link

@@ -92,8 +92,9 @@ class JSONScenarioReader:
         self.simulation_runner.link_output_sample_time = link_output_sample_time
         
         trip_output_file = self.data.get("trip_output_file", None)
-        trip_path = main_path.parent / trip_output_file
-        self.simulation_runner.trip_output_file = trip_path
+        if trip_output_file:
+            trip_path = main_path.parent / trip_output_file
+            self.simulation_runner.trip_output_file = trip_path
 
     def parse_route(self, route_str):
         return tuple(map(int, route_str.strip("()").split(",")))

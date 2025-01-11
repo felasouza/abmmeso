@@ -1,6 +1,7 @@
 import math
+from .baseLink import BaseLink
 
-class MatsimLink:
+class MatsimLink(BaseLink):
     def __init__(self, **kwargs):
         self.link_id = None
         self.length = None

@@ -1,6 +1,6 @@
+from .baseNode import BaseNode
 
-
-class OriginNode:
+class OriginNode(BaseNode):
     def __init__(self, node_id, link, demand_trips, **kwargs):
         self.node_id = node_id
         self.link = link

@@ -1,6 +1,6 @@
+from .baseNode import BaseNode
 
-
-class GeneralNodeModel:
+class GeneralNodeModel(BaseNode):
     def __init__(self, node_id, inbound_links, outbound_links, priority_vector):
         self.node_id = node_id
         self.inbound_links = inbound_links
