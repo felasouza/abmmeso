@@ -55,6 +55,15 @@ class JSONScenarioReader:
                     self.trips = json.load(f)["trips"]
         else:
             node_handler = self.node_handlers_continuous
+            
+        output_link_file = self.data.get("link_output_file", None)
+        if output_link_file:
+            main_path = pathlib.Path(self.filename)
+            output_link_path = main_path.parent / output_link_file
+            link_output_sample_time = self.data.get("link_output_sample_time", None)
+        else:
+            output_link_path = None
+            link_output_sample_time = None
 
         for link in self.data["links"]:
             if self.data["modeling_type"] == "discrete":
@@ -79,6 +88,12 @@ class JSONScenarioReader:
             total_time=self.total_time,
             time_step=self.time_step,
         )
+        self.simulation_runner.output_link_file = output_link_path
+        self.simulation_runner.link_output_sample_time = link_output_sample_time
+        
+        trip_output_file = self.data.get("trip_output_file", None)
+        trip_path = main_path.parent / trip_output_file
+        self.simulation_runner.trip_output_file = trip_path
 
     def parse_route(self, route_str):
         return tuple(map(int, route_str.strip("()").split(",")))

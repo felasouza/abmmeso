@@ -1,7 +1,8 @@
 import unittest
 from unittest.mock import Mock
 from continuousSingleCommodity.destinationNode import DestinationNode
-from continuousSingleCommodity.link import Link  
+from continuousSingleCommodity.link import Link
+
 
 class TestDestinationNode(unittest.TestCase):
 
@@ -33,5 +34,6 @@ class TestDestinationNode(unittest.TestCase):
         self.assertEqual(self.link.set_outflow.call_args[0][0], 0.5)
         self.assertEqual(self.destination_node.inflow[0], 0.5)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

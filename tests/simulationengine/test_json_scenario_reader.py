@@ -8,7 +8,7 @@ class TestJsonScenarioReader(unittest.TestCase):
         pass
 
 
-    def test_sample_multicommodity(self):
+    def test_sample_discrete(self):
         reader = simulationengine.jsonScenarioReader.JSONScenarioReader(Path("tests/simulationengine/sample.json").resolve())
         reader.read()
         runner = reader.get_simulation_runner()
