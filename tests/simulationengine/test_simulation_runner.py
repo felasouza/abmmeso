@@ -3,11 +3,21 @@ from simulationengine.simulationRunner import SimulationRunner
 from pathlib import Path
 from unittest.mock import Mock
 import csv
-
+import os
 
 class TestJsonSimulationRunner(unittest.TestCase):
     def setUp(self):
         pass
+
+    def tearDown(self):
+        files = [
+            Path("tests/simulationengine/mock_output.csv"),
+            Path("tests/simulationengine/mock_trip_output.csv"),
+            Path("tests/simulationengine/trips.csv"),
+        ]
+        for file in files:
+            if os.path.exists(file):
+                os.remove(file)
 
     def test_outputs(self):
         nodes = [Mock(), Mock()]

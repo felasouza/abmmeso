@@ -2,11 +2,20 @@ import unittest
 import simulationengine.jsonScenarioReader
 from continuousSingleCommodity.link import Link
 from pathlib import Path
+import os
 
 class TestJsonScenarioReader(unittest.TestCase):
     def setUp(self):
         pass
-
+    
+    def tearDown(self):
+        files = [
+            Path("tests/simulationengine/link.csv"),
+            Path("tests/simulationengine/trips.csv"),
+        ]
+        for file in files:
+            if os.path.exists(file):
+                os.remove(file)
 
     def test_sample_discrete(self):
         reader = simulationengine.jsonScenarioReader.JSONScenarioReader(Path("tests/simulationengine/sample.json").resolve())
