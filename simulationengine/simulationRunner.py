@@ -66,8 +66,7 @@ class SimulationRunner:
             all_records = []
             
             for node in self.nodes:
-                if "get_arrived_trips" in node.__class__.__dict__:
-                    all_records.extend([el for el in node.get_arrived_trips()])
+                all_records.extend([el for el in node.get_arrived_trips()])
 
             with open(self.trip_output_file, "w", newline="") as f:
                 writer = csv.DictWriter(f, fieldnames=all_records[0].keys())
