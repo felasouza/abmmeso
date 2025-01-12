@@ -13,7 +13,7 @@ Note: the implementation here is not the same as the POLARIS implementation (whi
 For now I (or we...) did not have any packaging so the easiest way is to clone the repository and have it on your own enviroment or add it to the sys.path.
 
 # Clone the repository
-git clone https://github.com/yourusername/yourproject.git
+git clone https://github.com/felasouza/abmmeso.git
 
 ## Contributing
 I am happy to accept changes from contributors. I am still setting up the whole thing here so there is no specific guidelines other than having a proper unittest for the added module(s).
