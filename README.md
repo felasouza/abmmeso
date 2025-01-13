@@ -22,6 +22,7 @@ on your command prompt:
 
 >> cd c:\Myproject
 <br>
+
 >> python -m abmmeso abmmeso/samples/example-json-files-inputs/sample.json
 
 you will see some csv outputs on the same folder (abmmeso/samples/example-json-files-inputs/). There are other .jon inputs there.
