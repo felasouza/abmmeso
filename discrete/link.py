@@ -73,6 +73,9 @@ class Link:
 
     def get_supply(self):
         return self._supply
+    
+    def get_capacity(self):
+        return self.cap
 
     def get_cumulative_demand_term(self):
         return self._cum_demand_term
