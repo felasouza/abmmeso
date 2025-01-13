@@ -10,6 +10,9 @@ class BaseLink:
     
     def compute_demand_and_supplies(self, t):
         pass
+    
+    def get_capacity(self):
+        return 0.0
 
     def set_inflow(self, inflow):
         pass

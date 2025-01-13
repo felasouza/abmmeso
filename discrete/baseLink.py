@@ -12,6 +12,9 @@ class BaseLink:
         pass
     def set_outflow(self, num_vehicles):
         pass
+    
+    def get_capacity(self):
+        return 0.0
 
     def get_demand(self):
         pass
