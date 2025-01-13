@@ -25,7 +25,7 @@ on your command prompt:
 
 >> python -m abmmeso abmmeso/samples/example-json-files-inputs/sample.json
 
-you will see some csv outputs on the same folder (abmmeso/samples/example-json-files-inputs/). There are other .jon inputs there.
+you will see some csv outputs on the same folder (abmmeso/samples/example-json-files-inputs/). There are other .json inputs there.
 
 # Clone the repository
 git clone https://github.com/felasouza/abmmeso.git
