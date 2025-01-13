@@ -10,7 +10,20 @@ As a macroscopic model, the model originally is not able to track vehicles indiv
 Note: the implementation here is not the same as the POLARIS implementation (which accounts for more elements, such as AV's), has DTA integrated and a tigher integration with the whole environment. Here is an implementation by the same author (me, Felipe de Souza) for adding features and new models and to compare with the continuous model that is not present on POLARIS. 
 
 ## Usage
-For now I (or we...) did not have any packaging so the easiest way is to clone the repository and have it on your own enviroment or add it to the sys.path.
+For now I (or we...) did not have any packaging so you need to either clone the repository from git or download itself. An introduction to using it through Python can be found at Jupyter-Notebook introduction.ipynb
+
+It is also possible to run through command line which can be useful for whoever does not want to dive into the Python code itself, but wants to run some scenarios based on some inputs and check the CSV outputs.
+
+I will assume you can open a command line and I will assume you can run Python by calling python 
+
+Let's say you have your c:\Myproject, put abmmeso there such that exist c:\MyProject\abmmeso, c:\MyProject\abmmeso\demand, and etc (change the c:\Myproject as needed based on your folder structure)
+
+on your command prompt:
+
+>> cd c:\Myproject
+>> python -m abmmeso abmmeso/samples/example-json-files-inputs/sample.json
+
+you will see some csv outputs on the same folder (abmmeso/samples/example-json-files-inputs/). There are other .jon inputs there.
 
 # Clone the repository
 git clone https://github.com/felasouza/abmmeso.git
