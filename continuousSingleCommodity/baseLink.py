@@ -1,5 +1,3 @@
-
-
 class BaseLink:
     def __init__(self, **kwargs):
         self.link_id = 0
@@ -7,9 +5,12 @@ class BaseLink:
 
     def start(self, time_step, total_time):
         pass
-    
+
     def compute_demand_and_supplies(self, t):
         pass
+
+    def get_capacity(self):
+        return 0.0
 
     def set_inflow(self, inflow):
         pass
@@ -19,9 +20,10 @@ class BaseLink:
 
     def get_demand(self):
         pass
+
     def get_supply(self):
         pass
-    
+
     def update_state_variables(self, t):
         pass
 

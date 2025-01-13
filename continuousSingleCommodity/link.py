@@ -53,6 +53,9 @@ class Link(BaseLink):
 
     def get_supply(self):
         return self._supply
+    
+    def get_capacity(self):
+        return self.cap
 
     def update_state_variables(self, t):
         self.cumulative_inflows[t+1] = self.cumulative_inflows[t] + self._inflow
