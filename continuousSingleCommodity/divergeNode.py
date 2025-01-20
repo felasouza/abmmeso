@@ -1,5 +1,6 @@
 from .baseNode import BaseNode
 
+
 class DivergeNode(BaseNode):
     def __init__(self, node_id, inbound_link, outbound_links, turn_rates, **kwargs):
         self.node_id = node_id
@@ -12,12 +13,12 @@ class DivergeNode(BaseNode):
 
         for k, v in kwargs.items():
             setattr(self, k, v)
-    
+
     def start(self, time_step, total_time):
         self.time_step = time_step
         self.total_time = total_time
         self.total_steps = total_time // time_step
-        
+
     def prepare_step(self, t):
         pass
 
@@ -28,8 +29,8 @@ class DivergeNode(BaseNode):
 
         for u, link in enumerate(self.outbound_links):
             supply = link.get_supply()
-            inbound_flow = min(inbound_flow, supply/self.turn_rates[u])
-        
+            inbound_flow = min(inbound_flow, supply / self.turn_rates[u])
+
         self.inbound_link.set_outflow(inbound_flow)
         for u, link in enumerate(self.outbound_links):
-            link.set_inflow(inbound_flow*self.turn_rates[u])
+            link.set_inflow(inbound_flow * self.turn_rates[u])

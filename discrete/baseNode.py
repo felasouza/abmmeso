@@ -1,4 +1,3 @@
-
 class BaseNode:
     def __init__(self):
         self.node_id = None
