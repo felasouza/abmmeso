@@ -1,18 +1,20 @@
-
 class BaseLink:
     def __init__(self, **kwargs):
         self.link_id = None
         self.length = None
 
-
     def start(self, time_step, total_time):
         pass
-    
+
     def set_inflow(self, vehicles):
         pass
+
     def set_outflow(self, num_vehicles):
         pass
     
+    def get_capacity(self):
+        return 0.0
+
     def get_capacity(self):
         return 0.0
 
@@ -30,7 +32,7 @@ class BaseLink:
 
     def get_vehicle_from_index(self, index):
         pass
-    
+
     def update_state_variables(self, t):
         pass
 

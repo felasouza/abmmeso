@@ -77,6 +77,9 @@ class Link:
     def get_capacity(self):
         return self.cap
 
+    def get_capacity(self):
+        return self.cap
+
     def get_cumulative_demand_term(self):
         return self._cum_demand_term
 
@@ -155,7 +158,10 @@ class Link:
 
         for t in range(total_steps + 1):
             start_step = int((t * time_step) / self.time_step)
-            next_st = min(int(((t + 1) * time_step) / self.time_step), len(self.cumulative_inflows)-1)
+            next_st = min(
+                int(((t + 1) * time_step) / self.time_step),
+                len(self.cumulative_inflows) - 1,
+            )
 
             if t == 0:
                 cumulative_inflow = 0

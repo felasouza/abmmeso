@@ -1,5 +1,6 @@
 from .baseNode import BaseNode
 
+
 class DivergeNode(BaseNode):
     def __init__(self, node_id, inbound_link, outbound_links):
         self.node_id = node_id
@@ -13,7 +14,7 @@ class DivergeNode(BaseNode):
         self.time_step = time_step
         self.total_time = total_time
         self.total_steps = int(total_time / time_step)
-    
+
     def prepare_step(self, t):
         pass
 
@@ -37,16 +38,16 @@ class DivergeNode(BaseNode):
                 vehicles_by_outbound_link[idx_outb].append(front_vehicle)
             else:
                 break
-        
+
         ret_val = self.inbound_link.set_outflow(total_flow)
         for idx_outb, vehicles in enumerate(vehicles_by_outbound_link):
             self.outbound_links[idx_outb].set_inflow(vehicles)
-        
+
         assert len(ret_val) == sum([len(vs) for vs in vehicles_by_outbound_link])
 
     def get_outbound_vehicle_from_vehicle(self, vehicle):
         idx_current = vehicle.route.index(self.inbound_link.link_id)
-        outbound_id = vehicle.route[idx_current+1]
+        outbound_id = vehicle.route[idx_current + 1]
 
         for idx_outb, link in enumerate(self.outbound_links):
             if link.link_id == outbound_id:

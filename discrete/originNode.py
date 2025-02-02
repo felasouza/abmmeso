@@ -1,5 +1,6 @@
 from .baseNode import BaseNode
 
+
 class OriginNode(BaseNode):
     def __init__(self, node_id, link, demand_trips, **kwargs):
         self.node_id = node_id
@@ -12,24 +13,23 @@ class OriginNode(BaseNode):
         self.entry_queue = None
         self.outflow = None
 
-        for k,v in kwargs.items():
+        for k, v in kwargs.items():
             setattr(self, k, v)
-    
 
     def start(self, time_step, total_time):
-        self.total_steps = int(total_time/time_step)
+        self.total_steps = int(total_time / time_step)
         self.time_step = time_step
         self.total_time = total_time
         self._demand = None
 
-        self.entry_queue = [0 for _ in range(self.total_steps+1)]
+        self.entry_queue = [0 for _ in range(self.total_steps + 1)]
         self.outflow = [0 for _ in range(self.total_steps)]
         self.vehicles = []
-    
+
     def prepare_step(self, t):
         vehicles_departed = 0
         for vehicle in self.demand_trips:
-            if vehicle.start <= t*self.time_step:
+            if vehicle.start <= t * self.time_step:
                 vehicles_departed += 1
                 self.vehicles.append(vehicle)
             else:
@@ -46,5 +46,5 @@ class OriginNode(BaseNode):
         else:
             self.link.set_inflow([])
         self._demand = None
-        self.entry_queue[t+1] = len(self.vehicles)
+        self.entry_queue[t + 1] = len(self.vehicles)
         self.outflow[t] = flow

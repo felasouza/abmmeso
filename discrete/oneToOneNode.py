@@ -1,5 +1,6 @@
 from .baseNode import BaseNode
 
+
 class OneToOneNode(BaseNode):
     def __init__(self, node_id, inbound_link, outbound_link):
         self.node_id = node_id
@@ -13,7 +14,7 @@ class OneToOneNode(BaseNode):
         self.time_step = time_step
         self.total_time = total_time
         self.total_steps = int(total_time / time_step)
-    
+
     def prepare_step(self, t):
         pass
 
