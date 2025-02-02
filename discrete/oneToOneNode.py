@@ -21,4 +21,4 @@ class OneToOneNode(BaseNode):
     def compute_flows(self, t):
         flow = min(self.inbound_link.get_demand(), self.outbound_link.get_supply())
         vehicles = self.inbound_link.set_outflow(flow)
-        self.outbound_link.set_isnflow(vehicles)
+        self.outbound_link.set_inflow(vehicles)
