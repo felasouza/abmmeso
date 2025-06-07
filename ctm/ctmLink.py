@@ -43,17 +43,26 @@ class CTMLink(BaseLink):
 
         self.demands = numpy.zeros((num_cells))
         self.supplies = numpy.zeros((num_cells))
+        
+        self._demand = 0.0
+        self._supply = 0.0
 
-    def compute_demand_supplies(self, step):
+    def compute_demand_and_supplies(self, step):
         for cell_index in range(self.num_cells):
             self.demands[cell_index] = self.num_lanes*self.fundamental_diagram.get_demand(self.rho[cell_index,step])
             self.supplies[cell_index] = self.num_lanes*self.fundamental_diagram.get_supply(self.rho[cell_index, step])
         
         self._supply = self.supplies[0]
         self._demand = self.demands[self.num_cells-1]
+        
+    def get_supply(self):
+        return self._supply*self.time_step
+    
+    def get_demand(self):
+        return self._demand*self.time_step
 
          
-    def update(self, step):
+    def update_state_variables(self, step):
 
         for cell_index in range(self.num_cells):
             if cell_index==0:
