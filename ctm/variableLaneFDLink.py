@@ -14,7 +14,6 @@ class VariableLaneFDLink(CTMLink):
         # Initialize the fundamental diagrams and lane counts
         self.fds_switches.append((0, self.fundamental_diagram))
         self.lanes_switches.append((0, self.num_lanes))
-        print(self.alpha_d)
     
     def set_switch(self, time_step, fundamental_diagram, num_lanes):
         self.fds_switches.append((time_step, fundamental_diagram))
