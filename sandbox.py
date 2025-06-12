@@ -83,6 +83,14 @@ def evaluate_control(schedule):
     total_time_on = 0
     total_transitions = 0
     
+    #penalty for the first and last time step to ensure starts and finish disabled
+    if schedule[0] > 0.5:
+        total_time_on += controller_steps*20
+    
+    if schedule[schedule.shape[0]-1] > 0.5:
+        total_time_on += controller_steps*20
+
+    
     for i in range(schedule.shape[0]):
         new = True if schedule[i] > 0.5 else False
         
@@ -119,7 +127,7 @@ if __name__ == "__main__":
     
     from scipy.optimize import differential_evolution
     
-    bounds = [(0, 1) for _ in range(100)]  # 10 time steps with values between 0 and 1
-    result = differential_evolution(evaluate_control, bounds, maxiter=6, popsize=10, disp=True, polish=False, workers=3)
+    bounds = [(0, 1) for _ in range(20)]  # 10 time steps with values between 0 and 1
+    result = differential_evolution(evaluate_control, bounds, maxiter=120, popsize=30, disp=True, polish=False, workers=30)
     
     print("Best schedule found:", result.x)
