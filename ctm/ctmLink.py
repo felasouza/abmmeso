@@ -61,6 +61,12 @@ class CTMLink(BaseLink):
     def get_demand(self):
         return self._demand*self.time_step
 
+    def get_capacity(self):
+        return self.fundamental_diagram.get_capacity()*self.num_lanes
+    
+    def get_jam_density(self):
+        return self.fundamental_diagram.get_jam_density()*self.num_lanes
+
          
     def update_state_variables(self, step):
 
@@ -80,7 +86,7 @@ class CTMLink(BaseLink):
             up_flow = self.qs[cell_index, step]
 
     def set_inflow(self, inflow):
-        self._inflow = inflow
+        self._inflow = inflow/self.time_step
 
     def set_outflow(self, outflow):
-        self._outflow = outflow
+        self._outflow = outflow/self.time_step

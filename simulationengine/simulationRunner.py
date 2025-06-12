@@ -11,6 +11,7 @@ class SimulationRunner:
         self.output_link_file = None
         self.trip_output_file = None
         self.link_output_sample_time = None
+        self.general_purpose_objects = None
 
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -21,10 +22,19 @@ class SimulationRunner:
 
         for node in self.nodes:
             node.start(self.time_step, self.total_time)
+            
+        if self.general_purpose_objects is not None:
+            for obj in self.general_purpose_objects:
+                obj.start(self.time_step, self.total_time)
 
         total_steps = int(self.total_time / self.time_step)
 
         for t in range(total_steps):
+            
+            if self.general_purpose_objects is not None:
+                for obj in self.general_purpose_objects:
+                    obj.run_step(t)
+            
             for node in self.nodes:
                 node.prepare_step(t)
 
