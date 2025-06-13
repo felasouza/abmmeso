@@ -24,18 +24,18 @@ def get_base_fd():
 
 def get_network_with_demands():
     fd = get_base_fd()
-    inbound_link_upstream = CTMLink(link_id=8, length=1200, lm=30, fundamental_diagram=fd, num_lanes=3)
-    inbound_link_1 = VariableLaneFDLink(link_id=1, length=300, kj=0.1, lm=30, fundamental_diagram=fd, num_lanes=3, alpha_d=0.0, alpha_r=0.0)
-    inbound_link_2 = CTMLink(link_id=2, length=300, lm=30, fundamental_diagram=fd, num_lanes=1)
-    outbound_link = VariableLaneFDLink(link_id=3, length=300, lm=30, fundamental_diagram=fd, num_lanes=3, alpha_d=0.0, alpha_r=0.0)
-    outbound_link_further = CTMLink(link_id=4, length=300, lm=30, fundamental_diagram=fd, num_lanes=3, alpha_d=0.1)
-    off_ramp_link = CTMLink(link_id=5, length=300, lm=30, fundamental_diagram=fd, num_lanes=1)
+    inbound_link_upstream = CTMLink(link_id=1, length=1200, lm=30, fundamental_diagram=fd, num_lanes=3)
+    inbound_link_1 = VariableLaneFDLink(link_id=2, length=300, kj=0.1, lm=30, fundamental_diagram=fd, num_lanes=3, alpha_d=0.0, alpha_r=0.0)
+    inbound_link_2 = CTMLink(link_id=10, length=300, lm=30, fundamental_diagram=fd, num_lanes=1)
+    outbound_link = VariableLaneFDLink(link_id=3, length=300, lm=30, fundamental_diagram=fd, num_lanes=3, alpha_d=0.3, alpha_r=0.0)
+    outbound_link_further = CTMLink(link_id=4, length=300, lm=30, fundamental_diagram=fd, num_lanes=3, alpha_d=0.0)
+    off_ramp_link = CTMLink(link_id=11, length=300, lm=30, fundamental_diagram=fd, num_lanes=1)
 
 
     origin_node_1 = OriginNode(1, inbound_link_upstream, upstream)
     origin_node_2 = OriginNode(2, inbound_link_2, ramp_counts)
     one_one_node = OneToOneNode(7, inbound_link_upstream, inbound_link_1)
-    merge_node = CapacityDropMergeNode(3, inbound_link_1, inbound_link_2, outbound_link, theta_l=0.3, theta_r=0.1)
+    merge_node = ctm.capacityDropMerge.CapacityDropMergeNode(3, inbound_link_1, inbound_link_2, outbound_link, theta_l=0.0, theta_r=0.25)
     node_diverge = DivergeNode(4, outbound_link, [outbound_link_further, off_ramp_link], turn_rates = [0.85, 0.15])
 
     destination_node = DestinationNode(5, outbound_link_further)
@@ -129,10 +129,14 @@ if __name__ == "__main__":
     
     from scipy.optimize import differential_evolution
     
+    def iteration_callback(xk, convergence=None, **kwargs):
+        print("Current schedule:", numpy.array([1 if el > 0.5 else 0 for el in result.x]))
+        return evaluate_control(xk)
+    
     bounds = [(0, 1) for _ in range(20)]  # 10 time steps with values between 0 and 1
     result = differential_evolution(evaluate_control, bounds, maxiter=120, popsize=30, disp=True, polish=False, workers=30)
     
     print("Best schedule found:", result.x)
     
-    binary_solution = numpy.array([1 if el > 0.5 else 0 for el in result.x])
+    binary_solution = list(numpy.array([1 if el > 0.5 else 0 for el in result.x]))
     print("Binary schedule:", binary_solution)
