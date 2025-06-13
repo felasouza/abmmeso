@@ -134,7 +134,7 @@ if __name__ == "__main__":
         return evaluate_control(xk)
     
     bounds = [(0, 1) for _ in range(20)]  # 10 time steps with values between 0 and 1
-    result = differential_evolution(evaluate_control, bounds, maxiter=120, popsize=30, disp=True, polish=False, workers=30)
+    result = differential_evolution(evaluate_control, bounds, maxiter=120, popsize=30, disp=True, polish=False, workers=30, callback=iteration_callback)
     
     print("Best schedule found:", result.x)
     
