@@ -130,7 +130,7 @@ if __name__ == "__main__":
     from scipy.optimize import differential_evolution
     
     def iteration_callback(xk, convergence=None, **kwargs):
-        print("Current schedule:", numpy.array([1 if el > 0.5 else 0 for el in result.x]))
+        print("Current schedule:", numpy.array([1 if el > 0.5 else 0 for el in xk]))
         return evaluate_control(xk)
     
     bounds = [(0, 1) for _ in range(20)]  # 10 time steps with values between 0 and 1
