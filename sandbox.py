@@ -131,3 +131,6 @@ if __name__ == "__main__":
     result = differential_evolution(evaluate_control, bounds, maxiter=120, popsize=30, disp=True, polish=False, workers=30)
     
     print("Best schedule found:", result.x)
+    
+    binary_solution = numpy.array([1 if el > 0.5 else 0 for el in result.x])
+    print("Binary schedule:", binary_solution)
