@@ -119,6 +119,12 @@ def evaluate_control(schedule):
     return tts+ on_weight * total_time_on + transition_weight * total_transitions
 
 
+def evaluate_try(schedule):
+    try:
+        return evaluate_control(schedule)
+    except:
+        return 1e7
+
 if __name__ == "__main__":
     # Example schedule: 0 for no switch, 1 for switch
     schedule = numpy.array([0, 0, 0, 0, 0, 0, 1, 1, 0, 0])
@@ -134,7 +140,7 @@ if __name__ == "__main__":
         return None
     
     bounds = [(0, 1) for _ in range(20)]  # 10 time steps with values between 0 and 1
-    result = differential_evolution(evaluate_control, bounds, maxiter=120, popsize=30, disp=True, polish=False, workers=30, callback=iteration_callback)
+    result = differential_evolution(evaluate_try, bounds, maxiter=120, popsize=30, disp=True, polish=False, workers=30, callback=iteration_callback)
     
     print("Best schedule found:", result.x)
     
