@@ -131,7 +131,7 @@ if __name__ == "__main__":
     
     def iteration_callback(xk, convergence=None, **kwargs):
         print("Current schedule:", numpy.array([1 if el > 0.5 else 0 for el in xk]))
-        return evaluate_control(xk)
+        return None
     
     bounds = [(0, 1) for _ in range(20)]  # 10 time steps with values between 0 and 1
     result = differential_evolution(evaluate_control, bounds, maxiter=120, popsize=30, disp=True, polish=False, workers=30, callback=iteration_callback)
