@@ -85,10 +85,10 @@ def evaluate_control(schedule):
     
     #penalty for the first and last time step to ensure starts and finish disabled
     if schedule[0] > 0.5:
-        total_time_on += controller_steps*20
+        total_time_on += controller_steps*80
     
     if schedule[schedule.shape[0]-1] > 0.5:
-        total_time_on += controller_steps*20
+        total_time_on += controller_steps*80
 
     
     for i in range(schedule.shape[0]):
@@ -111,8 +111,8 @@ def evaluate_control(schedule):
         tts += runner.links[i].rho.flatten().sum()
     
 
-    on_weight = 0.01
-    transition_weight = 200
+    on_weight = 0.02
+    transition_weight = 50
     
     return tts+ on_weight * total_time_on + transition_weight * total_transitions
 
