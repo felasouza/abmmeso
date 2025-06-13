@@ -8,7 +8,7 @@ from continuousSingleCommodity.mergeNode import MergeNode
 from continuousSingleCommodity.oneToOneNode import OneToOneNode
 from continuousSingleCommodity.divergeNode import DivergeNode
 from ctm.variableLaneFDLink import VariableLaneFDLink
-from ctm.capacityDropMerge import CapacityDropMergeNode
+import ctm.capacityDropMerge
 import simulationengine.simulationRunner as simulationRunner
 
 
