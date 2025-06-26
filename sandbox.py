@@ -118,6 +118,26 @@ def evaluate_control(schedule):
     
     return tts+ on_weight * total_time_on + transition_weight * total_transitions
 
+def map_percentage_schedule_to_binary(percent_schedule):
+    schedule = numpy.zeros(50)
+    current_time = 0
+    for i in range(int(percent_schedule.shape[0]/2)):
+        time_on = current_time + percent_schedule[i*2]
+        time_off = current_time + percent_schedule[i*2] + percent_schedule[i*2 + 1]
+        step_on = int((time_on/100.0)*len(schedule))
+        step_off = int((time_off/100.0)*len(schedule))
+        current_time += percent_schedule[i*2] + percent_schedule[i*2 + 1]
+        if step_off >= len(schedule):
+            break
+        
+        #print("Step on:", step_on, "Step off:", step_off)
+        for j in range(int(step_on), int(step_off)):
+            schedule[j] = 1
+            
+    return schedule
+
+def func_as_integer(schedule):
+    return evaluate_try(map_percentage_schedule_to_binary(schedule))
 
 def evaluate_try(schedule):
     try:
@@ -127,22 +147,36 @@ def evaluate_try(schedule):
 
 if __name__ == "__main__":
     # Example schedule: 0 for no switch, 1 for switch
-    schedule = numpy.array([0, 0, 0, 0, 0, 0, 1, 1, 0, 0])
-    evaluate_control(schedule)
     
-    schedule = numpy.array([0, 0, 1, 1, 0, 0, 1, 1, 0, 0])
-    evaluate_control(schedule)
+    binary_schedule = map_percentage_schedule_to_binary(numpy.array([10, 40, 5, 20]))
+    print("Binary schedule:", binary_schedule)
+    binary_schedule_second = map_percentage_schedule_to_binary(numpy.array([10, 10, 20, 40]))
+    print("Binary schedule second:", binary_schedule_second)
+    print(func_as_integer(numpy.array([10, 40, 5, 20])))
     
+    bounds = [(0, 100) for _ in range(4)]  # 10 time steps with values between 0 and 100
     from scipy.optimize import differential_evolution
-    
     def iteration_callback(xk, convergence=None, **kwargs):
-        print("Current schedule:", numpy.array([1 if el > 0.5 else 0 for el in xk]))
-        return None
+       print("Current schedule:", map_percentage_schedule_to_binary(xk))
+       return None
+    result = differential_evolution(func_as_integer, bounds, maxiter=120, popsize=30, disp=True, polish=False, workers=4, callback=iteration_callback)
+    print("Best schedule found:", result.x)    
+    # schedule = numpy.array([0, 0, 0, 0, 0, 0, 1, 1, 0, 0])
+    # evaluate_control(schedule)
     
-    bounds = [(0, 1) for _ in range(20)]  # 10 time steps with values between 0 and 1
-    result = differential_evolution(evaluate_try, bounds, maxiter=120, popsize=30, disp=True, polish=False, workers=30, callback=iteration_callback)
+    # schedule = numpy.array([0, 0, 1, 1, 0, 0, 1, 1, 0, 0])
+    # evaluate_control(schedule)
     
-    print("Best schedule found:", result.x)
+    # from scipy.optimize import differential_evolution
     
-    binary_solution = list(numpy.array([1 if el > 0.5 else 0 for el in result.x]))
-    print("Binary schedule:", binary_solution)
+    # def iteration_callback(xk, convergence=None, **kwargs):
+    #     print("Current schedule:", numpy.array([1 if el > 0.5 else 0 for el in xk]))
+    #     return None
+    
+    # bounds = [(0, 1) for _ in range(20)]  # 10 time steps with values between 0 and 1
+    # result = differential_evolution(evaluate_try, bounds, maxiter=120, popsize=30, disp=True, polish=False, workers=30, callback=iteration_callback)
+    
+    # print("Best schedule found:", result.x)
+    
+    # binary_solution = list(numpy.array([1 if el > 0.5 else 0 for el in result.x]))
+    # print("Binary schedule:", binary_solution)
