@@ -30,7 +30,7 @@ class TestCTMLink(unittest.TestCase):
         link.start(time_step=1, total_time=10)
         
         link.rho[:, 0] = [self.fd._kc] * 10
-        link.compute_demand_supplies(0) 
+        link.compute_demand_and_supplies(0) 
         self.assertAlmostEqual(link._demand, self.fd.get_capacity())
         self.assertAlmostEqual(link._supply, self.fd.get_capacity())
         
@@ -41,7 +41,7 @@ class TestCTMLink(unittest.TestCase):
         link._inflow = 0.5
         link._outflow = 0.0
         link.rho[:, 0] = [0.0] * 10
-        link.update(0)
+        link.update_state_variables(0)
         
         expected_rho = [0.0] * 10
         expected_rho[0] = 0.5/30.0
