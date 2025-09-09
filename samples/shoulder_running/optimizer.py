@@ -17,7 +17,10 @@ from continuousSingleCommodity.divergeNode import DivergeNode
 from ctm.variableLaneFDLink import VariableLaneFDLink
 import ctm.capacityDropMerge
 import simulationengine.simulationRunner as simulationRunner
-from scipy.optimize import differential_evolution
+try:
+    from scipy.optimize import differential_evolution
+except ImportError:
+    raise ImportError("scipy is not installed. Please install it to use optimization features.")
 
 # Data
 upstream= [121.2304423470158, 131.3879445175207, 135.36620840292113, 147.45343204965957, 121.96855327856917, 116.16250478700508, 170.86073021737548, 138.27887569206703, 156.53101265303403, 184.09347202749888, 190.074076876655, 135.50197445882515, 225.05358652631566, 194.52991745353805, 158.90927262654236, 184.29717564341465, 204.76265926366142, 175.2389901908838, 184.27778049257103, 184.29717564341465, 195.6074980569125, 176.10322413497852, 155.90927262654236, 165.06443383329128, 160.88987747569874, 179.40390350511237, 180.52027441017404, 174.3457180525815, 174.3457180525815, 158.05479078992727, 153.9772101865528, 165.09358109161448, 171.1905568458326, 159.01600048824002, 139.64749262221136, 166.66677870893935, 155.4728272005032, 180.78314961400105, 169.6279884072521, 175.80254476484467, 142.2400853903798, 165.6085932564085, 152.39524659712873, 136.43403689881595, 118.33706114460438, 115.61944056338409, 105.3564562954415, 113.16250478700533, 105.22069023953617, 108.29827084291065]
@@ -124,7 +127,7 @@ def evaluate_control(schedule):
         tts += runner.links[i].rho.flatten().sum()
     
 
-    on_weight = 0.002
+    on_weight = 0.02
     transition_weight = 50
     
     return tts+ on_weight * total_time_on + transition_weight * total_transitions
@@ -158,6 +161,8 @@ def evaluate_try(schedule):
         return 1e7
 
 def run_optimization(workers=None):
+    if differential_evolution is None:
+        raise ImportError("scipy.optimize.differential_evolution is not available. Please install scipy.")
     if workers is None:
         workers = os.cpu_count()
     bounds = [(0, 100) for _ in range(4)]
